@@ -49,6 +49,14 @@ public class SomeTests {
         assertEquals("Cart total should be the sum of both products.", BREAD_PRICE_WITH_VAT + WINE_PRICE_WITH_VAT, store.getCartTotal(cartId), 0.1);
     }
 
+    @Test
+    public void testTwoOfOneAndAnotherProduct() {
+        store.addProductToCart(BREAD_ID, 2, cartId);
+        store.addProductToCart(WINE_ID, cartId);
+        assertEquals("Cart should have two products.", 2, store.getProductsCountInCart(cartId));
+        assertEquals("Cart total should be the sum of both products.", 2 * BREAD_PRICE_WITH_VAT + WINE_PRICE_WITH_VAT, store.getCartTotal(cartId), 0.1);
+    }
+
     @Test(expected = CartNotFoundException.class)
     public void testNonexistentCart() throws Exception {
         store.addProductToCart("Bread", 777);
@@ -61,8 +69,8 @@ public class SomeTests {
 
     private Map<String, Product> createProducts() {
         Map<String, Product> products = new HashMap<>();
-        products.put(BREAD_ID, new Product(BREAD_ID, BREAD_PRICE));
-        products.put(WINE_ID, new Product(WINE_ID, WINE_PRICE));
+        products.put(BREAD_ID, new Product(BREAD_ID, BREAD_PRICE, 100));
+        products.put(WINE_ID, new Product(WINE_ID, WINE_PRICE, 100));
         return products;
     }
 }

@@ -22,7 +22,7 @@ public class Cart {
     }
 
     public double getTotal() {
-        return products.stream().mapToDouble(Product::getFullPrice).sum();
+        return products.stream().mapToDouble(Product::getFullPriceForAll).sum();
     }
 
 
