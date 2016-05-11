@@ -17,11 +17,7 @@ public class Cart {
         products.add(product);
     }
 
-    public int getProductsCount() {
-        return products.size();
-    }
-
-    public double getTotal() {
+    public double getTotalPrice() {
         return products.stream().mapToDouble(Product::getFullPriceForAll).sum();
     }
 

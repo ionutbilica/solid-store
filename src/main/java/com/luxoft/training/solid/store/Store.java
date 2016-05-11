@@ -8,12 +8,14 @@ import java.util.Map;
 
 public class Store {
 
+    private Map<String, Product> stock;
+    private final StoreMoneyAccount account;
     private final Map<Integer, Cart> carts;
     private int latestCartId;
-    private Map<String, Product> stock;
-    public enum Delivery {STANDARD, FAST, PICKUP};
+    private enum Delivery {STANDARD, FAST, PICKUP};
 
-    public Store(Map<String, Product> stock) {
+    public Store(Map<String, Product> stock, StoreMoneyAccount account) {
+        this.account = account;
         this.carts = new HashMap<Integer, Cart>();
         latestCartId = 0;
         this.stock = stock;
@@ -35,13 +37,16 @@ public class Store {
         cart.addProduct(product);
     }
 
-    public int getProductsCountInCart(int cartId) {
-        return getCart(cartId).getProductsCount();
-    }
-
     public double getCartTotal(int cartId) {
         Cart cart = getCart(cartId);
-        return cart.getTotal();
+        return cart.getTotalPrice();
+    }
+
+    public void pay(int cartId) {
+        Cart cart = getCart(cartId);
+        double moneyFromTheClient = cart.getTotalPrice();
+        // Play pretend we're taking cash from the client's account.
+        account.receiveMoney(moneyFromTheClient);
     }
 
     private Product getProduct(String productId, int count) {
