@@ -28,21 +28,29 @@ public class CartTest {
     @Test
     public void testSingleProduct() {
         store.addProductToCart(BREAD_NAME, cartId);
-        assertEquals("Cart total should be 0.", BREAD_PRICE_WITH_VAT, store.getCartTotal(cartId), 0.1);
+        assertEquals("Cart total should be 0.", BREAD_PRICE, store.getCartTotal(cartId), 0.1);
     }
 
     @Test
     public void testTwoProduct() {
         store.addProductToCart(BREAD_NAME, cartId);
         store.addProductToCart(WINE_NAME, cartId);
-        assertEquals("Cart total should be the sum of both products.", BREAD_PRICE_WITH_VAT + WINE_PRICE_WITH_VAT, store.getCartTotal(cartId), 0.1);
+        assertEquals("Cart total should be the sum of both products.", BREAD_PRICE + WINE_PRICE, store.getCartTotal(cartId), 0.1);
     }
 
     @Test
     public void testTwoOfOneAndAnotherProduct() {
         store.addProductToCart(BREAD_NAME, 2, cartId);
         store.addProductToCart(WINE_NAME, cartId);
-        assertEquals("Cart total should be the sum of both products.", 2 * BREAD_PRICE_WITH_VAT + WINE_PRICE_WITH_VAT, store.getCartTotal(cartId), 0.1);
+        assertEquals("Cart total should be the sum of both products.", 2 * BREAD_PRICE + WINE_PRICE, store.getCartTotal(cartId), 0.1);
+    }
+
+    @Test
+    public void testWithDelivery() {
+        store.addProductToCart(BREAD_NAME, cartId);
+        store.addProductToCart(WINE_NAME, cartId);
+        store.addDeliveryToCart(cartId);
+        assertEquals("Cart total should be the sum of both products plus delivery.", BREAD_PRICE + WINE_PRICE + 12, store.getCartTotal(cartId), 0.1);
     }
 
     @Test(expected = CartNotFoundException.class)

@@ -23,6 +23,6 @@ public class PaymentTest {
         store.addProductToCart(BREAD_NAME, cartId);
         store.addProductToCart(WINE_NAME, cartId);
         store.pay(cartId);
-        assertEquals("Cash amount incorrect.", BREAD_PRICE_WITH_VAT + WINE_PRICE_WITH_VAT, store.getCashAmount(), 0.1);
+        assertEquals("Cash amount incorrect.", BREAD_PRICE + WINE_PRICE, store.getCashAmount(), 0.1);
     }
 }

@@ -41,6 +41,11 @@ public class Store {
         return cart.getTotalPrice();
     }
 
+    public void addDeliveryToCart(int cartId) {
+        Cart cart = getCart(cartId);
+        cart.addDelivery();
+    }
+
     public String pay(int cartId) {
         Cart cart = getCart(cartId);
         double moneyFromTheClient = cart.getTotalPrice();

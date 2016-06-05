@@ -36,9 +36,28 @@ public class ReceiptTest {
         receipt = removeUntestableInfo(receipt);
         Assert.assertEquals("Receipt for two products not as expected."
         , "Our StoreReceipt no.: not able to test this.\n" +
-                        "Bread 1 x 5.0 = 5.0\n" +
-                        "Wine 2 x 10.0 = 20.0\n" +
+                        "Bread: 1 x 5.0 = 5.0\n" +
+                        "Wine: 2 x 10.0 = 20.0\n" +
                         "Total: 25.0\n" +
+                        "Date: not able to test this.\n"
+                ,receipt
+        );
+    }
+
+    @Test
+    public void testWithDelivery() {
+        new TestStock().insertIntoStore(store);
+        store.addProductToCart(TestStock.BREAD_NAME, cartId);
+        store.addProductToCart(TestStock.WINE_NAME, 2, cartId);
+        store.addDeliveryToCart(cartId);
+        String receipt = store.pay(cartId);
+        receipt = removeUntestableInfo(receipt);
+        Assert.assertEquals("Receipt for two products not as expected."
+                , "Our StoreReceipt no.: not able to test this.\n" +
+                        "Bread: 1 x 5.0 = 5.0\n" +
+                        "Wine: 2 x 10.0 = 20.0\n" +
+                        "Delivery: 12.0\n" +
+                        "Total: 37.0\n" +
                         "Date: not able to test this.\n"
                 ,receipt
         );

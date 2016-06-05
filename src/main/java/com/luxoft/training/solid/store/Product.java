@@ -4,7 +4,6 @@ import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
 
 public class Product {
 
-    public static final double VAT = 0.25;
     private final String name;
     private final double price;
     private int count;
@@ -19,12 +18,8 @@ public class Product {
         return price;
     }
 
-    public double getFullPrice() {
-        return price + price * VAT;
-    }
-
     public double getFullPriceForAll() {
-        return getFullPrice() * count;
+        return getPrice() * count;
     }
 
     public int getCount() {
