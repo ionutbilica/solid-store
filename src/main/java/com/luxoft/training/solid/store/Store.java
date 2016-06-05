@@ -8,17 +8,16 @@ import java.util.Map;
 
 public class Store {
 
-    private Map<String, Product> stock;
-    private final StoreMoneyAccount account;
+    private final Map<String, Product> stock;
+    private double cash;
     private final Map<Integer, Cart> carts;
     private int latestCartId;
-    private enum Delivery {STANDARD, FAST, PICKUP};
 
-    public Store(Map<String, Product> stock, StoreMoneyAccount account) {
-        this.account = account;
-        this.carts = new HashMap<Integer, Cart>();
+    public Store() {
+        this.stock = new HashMap<>();
+        cash = 0;
+        carts = new HashMap<Integer, Cart>();
         latestCartId = 0;
-        this.stock = stock;
     }
 
     public int createNewCart() {
@@ -42,11 +41,15 @@ public class Store {
         return cart.getTotalPrice();
     }
 
-    public void pay(int cartId) {
+    public String pay(int cartId) {
         Cart cart = getCart(cartId);
         double moneyFromTheClient = cart.getTotalPrice();
-        // Play pretend we're taking cash from the client's account.
-        account.receiveMoney(moneyFromTheClient);
+        cash += moneyFromTheClient;
+        return cart.getReceipt();
+    }
+
+    public double getCashAmount() {
+        return cash;
     }
 
     private Product getProduct(String productId, int count) {
@@ -54,7 +57,7 @@ public class Store {
         if (productInStock == null) {
             throw new ProductNotFoundException(productId);
         }
-        Product productInCart = productInStock.getSome(count);
+        Product productInCart = productInStock.takeSome(count);
         return productInCart;
     }
 
@@ -64,5 +67,10 @@ public class Store {
             throw  new CartNotFoundException(cartId);
         }
         return cart;
+    }
+
+    public void addProductToStock(String name, double price, int count) {
+        Product p = new Product(name, price, count);
+        stock.put(name, p);
     }
 }

@@ -5,12 +5,12 @@ import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
 public class Product {
 
     public static final double VAT = 0.25;
-    private final String id;
+    private final String name;
     private final double price;
     private int count;
 
-    public Product (String id, double price, int count) {
-        this.id = id;
+    public Product (String name, double price, int count) {
+        this.name = name;
         this.price = price;
         this.count = count;
     }
@@ -31,9 +31,13 @@ public class Product {
         return count;
     }
 
-    public Product getSome(int count) {
+    public String getName() {
+        return name;
+    }
+
+    public Product takeSome(int count) {
         changeCount(-count);
-        return new Product(id, price, count);
+        return new Product(name, price, count);
     }
 
     private void changeCount(int delta) {
@@ -46,7 +50,7 @@ public class Product {
     @Override
     public String toString() {
         return "Product{" +
-                "id='" + id + '\'' +
+                "name='" + name + '\'' +
                 ", price=" + price +
                 ", count=" + count +
                 '}';
