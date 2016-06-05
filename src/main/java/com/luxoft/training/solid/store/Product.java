@@ -2,11 +2,11 @@ package com.luxoft.training.solid.store;
 
 import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
 
-public class Product {
+public final class Product {
 
     private final String name;
     private final double price;
-    private int count;
+    private final int count;
 
     public Product (String name, double price, int count) {
         this.name = name;
@@ -28,18 +28,6 @@ public class Product {
 
     public String getName() {
         return name;
-    }
-
-    public Product takeSome(int count) {
-        changeCount(-count);
-        return new Product(name, price, count);
-    }
-
-    private void changeCount(int delta) {
-        if (count + delta < 0) {
-            throw new NotEnoughInStockException(this, delta);
-        }
-        count += delta;
     }
 
     @Override

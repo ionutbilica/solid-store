@@ -1,6 +1,7 @@
 package com.luxoft.training.solid.store;
 
 import com.luxoft.training.solid.store.exception.CartNotFoundException;
+import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
 import com.luxoft.training.solid.store.exception.ProductNotFoundException;
 
 import java.util.HashMap;
@@ -26,14 +27,20 @@ public class Store {
         return latestCartId;
     }
 
-    public void addProductToCart(String productId, int cartId) {
-        addProductToCart(productId, 1, cartId);
+    public void addProductToCart(String name, int cartId) {
+        addProductToCart(name, 1, cartId);
     }
 
-    public void addProductToCart(String productId, int count, int cartId) {
+    public void addProductToCart(String name, int count, int cartId) {
         Cart cart = getCart(cartId);
-        Product product = getProduct(productId, count);
+        Product product = takeFromStock(name, count);
         cart.addProduct(product);
+    }
+
+    private Product takeFromStock(String name, int count) {
+        Product productInStock = findProductInStock(name);
+        removeProductFromStock(productInStock, count);
+        return new Product(productInStock.getName(), productInStock.getPrice(), count);
     }
 
     public double getCartTotal(int cartId) {
@@ -57,15 +64,6 @@ public class Store {
         return cash;
     }
 
-    private Product getProduct(String productId, int count) {
-        Product productInStock = stock.get(productId);
-        if (productInStock == null) {
-            throw new ProductNotFoundException(productId);
-        }
-        Product productInCart = productInStock.takeSome(count);
-        return productInCart;
-    }
-
     private Cart getCart(int cartId) {
         Cart cart = carts.get(cartId);
         if (cart == null) {
@@ -75,7 +73,34 @@ public class Store {
     }
 
     public void addProductToStock(String name, double price, int count) {
-        Product p = new Product(name, price, count);
+        Product p;
+        try {
+            p = findProductInStock(name);
+            p = new Product(name, price, p.getCount() + count);
+        } catch (ProductNotFoundException e) {
+            p = new Product(name, price, count);
+        }
         stock.put(name, p);
+    }
+
+    private Product findProductInStock(String name) {
+        Product productInStock = stock.get(name);
+        if (productInStock == null) {
+            throw new ProductNotFoundException(name);
+        }
+        return productInStock;
+    }
+
+    public void removeProductFromStock(String name, int countToRemove) {
+        Product p = findProductInStock(name);
+        removeProductFromStock(p, countToRemove);
+    }
+
+    private void removeProductFromStock(Product p, int countToRemove) {
+        if (countToRemove > p.getCount()) {
+            throw new NotEnoughInStockException(p, countToRemove);
+        }
+        p = new Product(p.getName(), p.getPrice(), p.getCount() - countToRemove);
+        stock.put(p.getName(), p);
     }
 }
