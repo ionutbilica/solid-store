@@ -1,5 +1,6 @@
 package com.luxoft.training.solid.store;
 
+import com.luxoft.training.solid.store.persistence.file.FilePersistence;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -13,7 +14,7 @@ public class PaymentTest {
 
     @Before
     public void beforeTest() {
-        store = new Store();
+        store = new Store(new FilePersistence());
         new TestStock().insertIntoStore(store);
         cartId = store.createNewCart();
     }

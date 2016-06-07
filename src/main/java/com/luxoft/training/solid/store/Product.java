@@ -1,12 +1,12 @@
 package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
+public class Product {
 
-public final class Product {
+    private String name;
+    private double price;
+    private int count;
 
-    private final String name;
-    private final double price;
-    private final int count;
+    public Product() {}
 
     public Product (String name, double price, int count) {
         this.name = name;

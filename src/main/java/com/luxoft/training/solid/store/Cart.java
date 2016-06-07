@@ -19,6 +19,12 @@ public class Cart {
         products = new ArrayList<>();
     }
 
+    public Cart(CartData cartData) {
+        id = cartData.getId();
+        products = new ArrayList<>(cartData.getProducts());
+        hasDelivery = cartData.isHasDelivery();
+    }
+
     public void addProduct(Product product) {
         products.add(product);
     }
@@ -45,5 +51,9 @@ public class Cart {
 
     public void addDelivery() {
         this.hasDelivery = true;
+    }
+
+    public CartData getData() {
+        return new CartData(id, new ArrayList<>(products), hasDelivery);
     }
 }

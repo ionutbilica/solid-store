@@ -3,27 +3,28 @@ package com.luxoft.training.solid.store;
 import com.luxoft.training.solid.store.exception.CartNotFoundException;
 import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
 import com.luxoft.training.solid.store.exception.ProductNotFoundException;
+import com.luxoft.training.solid.store.persistence.Persistence;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class Store {
 
-    private final Map<String, Product> stock;
+
+    private final Persistence persistence;
     private double cash;
-    private final Map<Integer, Cart> carts;
+
     private int latestCartId;
 
-    public Store() {
-        this.stock = new HashMap<>();
+    public Store(Persistence persistence) {
+        this.persistence = persistence;
         cash = 0;
-        carts = new HashMap<Integer, Cart>();
         latestCartId = 0;
     }
 
     public int createNewCart() {
         latestCartId++;
-        carts.put(latestCartId, new Cart(latestCartId));
+        persistence.putCart(latestCartId, new Cart(latestCartId));
         return latestCartId;
     }
 
@@ -65,7 +66,7 @@ public class Store {
     }
 
     private Cart getCart(int cartId) {
-        Cart cart = carts.get(cartId);
+        Cart cart = persistence.getCart(cartId);
         if (cart == null) {
             throw  new CartNotFoundException(cartId);
         }
@@ -80,11 +81,11 @@ public class Store {
         } catch (ProductNotFoundException e) {
             p = new Product(name, price, count);
         }
-        stock.put(name, p);
+        persistence.putProduct(name, p);
     }
 
     private Product findProductInStock(String name) {
-        Product productInStock = stock.get(name);
+        Product productInStock = persistence.getProduct(name);
         if (productInStock == null) {
             throw new ProductNotFoundException(name);
         }
@@ -101,6 +102,6 @@ public class Store {
             throw new NotEnoughInStockException(p, countToRemove);
         }
         p = new Product(p.getName(), p.getPrice(), p.getCount() - countToRemove);
-        stock.put(p.getName(), p);
+        persistence.putProduct(p.getName(), p);
     }
 }
