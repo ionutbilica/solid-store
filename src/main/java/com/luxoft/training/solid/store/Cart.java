@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 public class Cart {
 
@@ -30,7 +31,10 @@ public class Cart {
     }
 
     public double getTotalPrice() {
-        double productsTotal = products.stream().mapToDouble(Product::getFullPriceForAll).sum();
+        double productsTotal = 0;
+        for (Product p : products) {
+            productsTotal += p.getFullPriceForAll();
+        }
         double deliveryCost = hasDelivery ? DELIVERY_COST : 0;
         return productsTotal + deliveryCost;
     }
@@ -55,5 +59,29 @@ public class Cart {
 
     public CartData getData() {
         return new CartData(id, new ArrayList<>(products), hasDelivery);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Cart cart = (Cart) o;
+        return Objects.equals(id, cart.id) &&
+                Objects.equals(hasDelivery, cart.hasDelivery) &&
+                Objects.equals(products, cart.products);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, products, hasDelivery);
+    }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                ", products=" + products +
+                ", hasDelivery=" + hasDelivery +
+                '}';
     }
 }

@@ -6,6 +6,7 @@ import com.luxoft.training.solid.store.Product;
 import com.luxoft.training.solid.store.persistence.Persistence;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,25 +36,26 @@ public class FilePersistence implements Persistence {
 
     @Override
     public Product getProduct(String name) {
-        return stock.get(name);
+        return stock.get(name).asProduct();
     }
 
     @Override
     public void putCart(int cartId, Cart cart) {
-        carts.put(cartId, new SerializableCartData(cart.getData()));
+        CartData data = cart.getData();
+        carts.put(cartId, new SerializableCartData(data));
         save();
     }
 
     @Override
     public Cart getCart(int cartId) {
-        return new Cart(carts.get(cartId));
+        return new Cart(carts.get(cartId).asCartData());
     }
 
     private void save() {
         try (FileOutputStream fileOut = new FileOutputStream(FILE);
              ObjectOutputStream out = new ObjectOutputStream(fileOut)) {
             out.writeObject(stock);
-//            out.writeObject(carts);
+            out.writeObject(carts);
         }catch(IOException e) {
             throw new RuntimeException(e);
         }
@@ -63,47 +65,63 @@ public class FilePersistence implements Persistence {
         try (FileInputStream fileIn = new FileInputStream(FILE);
              ObjectInputStream in = new ObjectInputStream(fileIn)) {
             stock = (Map<String, SerializableProduct>) in.readObject();
-//            carts = (Map<Integer, SerializableCartData>) in.readObject();
+            carts = (Map<Integer, SerializableCartData>) in.readObject();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void main(String[] args) {
-        FilePersistence p = new FilePersistence();
-        p.putProduct("ceva", new Product("ceceva", 123, 456));
-        p.putProduct("cevava", new Product("ceceva", 123, 456));
-//        p.putCart(123, new Cart(123));
-        FilePersistence pp = new FilePersistence();
-        Product ceva = pp.getProduct("ceva");
-        System.out.println(ceva);
-//        Cart cart = p.getCart(123);
-//        System.out.println(cart.getReceipt());
-    }
-
-    public static class SerializableProduct extends Product implements Serializable {
+    private static class SerializableProduct implements Serializable {
 
         private static final long serialVersionUID = -7588980448693010399L;
 
-        public SerializableProduct() {
-            super(null, 0, 0);
+        private String name;
+        private double price;
+        private int count;
+
+        public SerializableProduct(String name, double price, int count) {
+            this.name = name;
+            this.price = price;
+            this.count = count;
         }
 
         public SerializableProduct(Product p) {
-            super(p.getName(), p.getPrice(), p.getCount());
+            this(p.getName(), p.getPrice(), p.getCount());
+        }
+        
+        public Product asProduct() {
+            return new Product(name, price, count);
         }
     }
 
-    private static class SerializableCartData extends CartData implements Serializable {
+    private static class SerializableCartData implements Serializable {
 
         private static final long serialVersionUID = -7588980448693010000L;
+        
+        private int id;
+        private List<SerializableProduct> products;
+        private boolean hasDelivery;
 
-        public SerializableCartData() {
-            super(0, null, false);
+        public SerializableCartData(int id, List<Product> products, boolean hasDelivery) {
+            this.id = id;
+            this.products = new ArrayList<>();
+            for (Product p : products) {
+                this.products.add(new SerializableProduct(p));
+            }
+            this.hasDelivery = hasDelivery;
         }
 
-        public SerializableCartData(CartData c) {
-            super(c.getId(), c.getProducts(), c.isHasDelivery());
+        public SerializableCartData(CartData d) {
+            this(d.getId(), d.getProducts(), d.isHasDelivery());
+        }
+        
+        public CartData asCartData() {
+            List<Product> products = new ArrayList<>();
+            for (SerializableProduct p : this.products) {
+                products.add(p.asProduct());
+            }
+            return new CartData(id, products, hasDelivery);            
         }
     }
+
 }
