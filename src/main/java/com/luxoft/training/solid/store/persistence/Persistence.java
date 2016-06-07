@@ -5,11 +5,17 @@ import com.luxoft.training.solid.store.Product;
 
 public interface Persistence {
 
-    public void putProduct(String name, Product product);
+    void putProduct(String name, Product product) throws PersistenceException;
 
-    public Product getProduct(String name);
+    Product getProduct(String name) throws PersistenceException;
 
-    public void putCart(int cartId, Cart cart);
+    void putCart(int cartId, Cart cart) throws PersistenceException;
 
-    public Cart getCart(int cartId);
+    Cart getCart(int cartId) throws PersistenceException;
+    
+    class PersistenceException extends RuntimeException {
+        public PersistenceException(Throwable cause) {
+            super(cause);
+        }
+    }
 }

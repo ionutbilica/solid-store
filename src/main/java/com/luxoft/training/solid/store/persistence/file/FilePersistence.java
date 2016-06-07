@@ -57,7 +57,7 @@ public class FilePersistence implements Persistence {
             out.writeObject(stock);
             out.writeObject(carts);
         }catch(IOException e) {
-            throw new RuntimeException(e);
+            throw new PersistenceException(e);
         }
     }
 
@@ -67,7 +67,7 @@ public class FilePersistence implements Persistence {
             stock = (Map<String, SerializableProduct>) in.readObject();
             carts = (Map<Integer, SerializableCartData>) in.readObject();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new PersistenceException(e);
         }
     }
 
