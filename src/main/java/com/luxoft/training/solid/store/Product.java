@@ -1,5 +1,7 @@
 package com.luxoft.training.solid.store;
 
+import com.luxoft.training.solid.store.persistence.ProductData;
+
 import java.util.Objects;
 
 public final class Product {
@@ -12,6 +14,10 @@ public final class Product {
         this.name = name;
         this.price = price;
         this.count = count;
+    }
+    
+    public Product (ProductData data) {
+        this(data.getName(), data.getPrice(), data.getCount());
     }
     
     public double getPrice() {
@@ -28,6 +34,10 @@ public final class Product {
 
     public String getName() {
         return name;
+    }
+    
+    public ProductData getData() {
+        return new ProductData(name, price, count);        
     }
 
     @Override

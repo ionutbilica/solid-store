@@ -1,13 +1,17 @@
 package com.luxoft.training.solid.store.persistence.h2;
 
 import com.luxoft.training.solid.store.Cart;
-import com.luxoft.training.solid.store.CartData;
 import com.luxoft.training.solid.store.Product;
-import com.luxoft.training.solid.store.persistence.Persistence;
+import com.luxoft.training.solid.store.persistence.*;
 
 import java.io.Closeable;
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class H2Persistence implements Persistence, Closeable {
 
@@ -41,50 +45,53 @@ public class H2Persistence implements Persistence, Closeable {
     }
     
     @Override
-    public void putProduct(String name, Product product) {
-        if (getProduct(name) == null) {
-            insertProduct(product);
-        } else {
-            updateProduct(product);
+    public void putProduct(ProductData productData) {
+        try {
+            getProduct(productData.getName());
+            updateProduct(productData);
+        } catch (ProductNotFoundException e) {
+            insertProduct(productData);                
         }
     }
 
-    private void insertProduct(Product product) {
-        executeSql("INSERT INTO PRODUCT VALUES ('" + product.getName() + "', " + product.getPrice() + " , " + product.getCount() + ")");
+    private void insertProduct(ProductData productData) {
+        executeSql("INSERT INTO PRODUCT VALUES ('" + productData.getName() + "', " + productData.getPrice() + " , " + productData.getCount() + ")");
     }
 
-    private void updateProduct(Product product) {
-        executeSql("UPDATE PRODUCT SET price=" + product.getPrice() + " , count=" + product.getCount() + " WHERE name='" + product.getName() + "'");
+    private void updateProduct(ProductData productData) {
+        executeSql("UPDATE PRODUCT SET price=" + productData.getPrice() + " , count=" + productData.getCount() + " WHERE name='" + productData.getName() + "'");
     }
 
     @Override
-    public Product getProduct(String name) {
-        Product product = null;
+    public ProductData getProduct(String name) {
         String sql = "SELECT * FROM PRODUCT WHERE name ='" + name + "'";
         try (ResultSet resultSet = connection.createStatement().executeQuery(sql)) {
             if (resultSet.next()) {
-                product = loadProduct(resultSet);
+                return loadProduct(resultSet);
+            } else {
+                throw new ProductNotFoundException(name);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new PersistenceException(e);
         }
-        return product;
     }
 
-    private Product loadProduct(ResultSet resultSet) throws SQLException {
-        return new Product(resultSet.getString("name"), resultSet.getDouble("price"), resultSet.getInt("count"));
+    private ProductData loadProduct(ResultSet resultSet) throws SQLException {
+        return new ProductData(resultSet.getString("name"), resultSet.getDouble("price"), resultSet.getInt("count"));
     }
 
     @Override
-    public void putCart(int cartId, Cart cart) {
-        CartData cartData = cart.getData();
-        if (getCartWithoutProducts(cartId) == null) {
-            insertCart(cartData);
-        } else {
+    public void putCart(CartData cartData) {
+        try {
+            getCartWithoutProducts(cartData.getId());
             updateCart(cartData);
-            cleanProducts(cartData);
+        } catch (CartNotFoundException e) {
+            insertCart(cartData);
         }
-        for (Product p : cartData.getProducts()) {
+    }
+
+    private void insertCartProducts(CartData cartData) {
+        for (ProductData p : cartData.getProductsData()) {
             insertProductToCart(cartData, p);
         }
     }
@@ -94,7 +101,9 @@ public class H2Persistence implements Persistence, Closeable {
     }
 
     private void updateCart(CartData cartData) {
+        cleanProducts(cartData);
         executeSql("UPDATE CART SET delivery=" + cartData.isHasDelivery() + " WHERE id=" + cartData.getId());
+        insertCartProducts(cartData);
     }
     
     private void executeSql(String sql) {
@@ -105,54 +114,53 @@ public class H2Persistence implements Persistence, Closeable {
         }
     }
 
-    private Cart getCartWithoutProducts(int cartId) {
-        Cart cart = null;
+    private CartData getCartWithoutProducts(int cartId) {
         String sql = "SELECT * FROM CART WHERE id ='" + cartId + "'";
         try (ResultSet resultSet = connection.createStatement().executeQuery(sql)) {
             if (resultSet.next()) {
-                cart = new Cart(resultSet.getInt("id"));
-                if (resultSet.getBoolean("delivery")) {
-                    cart.addDelivery();
-                }
+                return new CartData(resultSet.getInt("id"), null, resultSet.getBoolean("delivery"));
+            } else {
+                throw new CartNotFoundException(cartId);
             }
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
-        return cart;
     }
 
-    private void insertCart(CartData data) {
-        executeSql("INSERT INTO CART VALUES ('" + data.getId() + "', " + data.isHasDelivery() + ")");
+    private void insertCart(CartData cartData) {
+        executeSql("INSERT INTO CART VALUES ('" + cartData.getId() + "', " + cartData.isHasDelivery() + ")");
+        insertCartProducts(cartData);
     }
 
-    private void insertProductToCart(CartData data, Product p) {
+    private void insertProductToCart(CartData data, ProductData p) {
         executeSql("INSERT INTO CART_PRODUCT VALUES (" + data.getId() + ", '" + p.getName() + "')");
     }
 
     @Override
-    public Cart getCart(int cartId) {
-        Cart cart = getCartWithoutProducts(cartId);
+    public CartData getCart(int cartId) {
+        CartData cart = getCartWithoutProducts(cartId);
+        List<ProductData> products = new ArrayList<>();
         String sql = "SELECT * FROM CART_PRODUCT, PRODUCT WHERE cart_id ='" + cartId + "'";
         try (ResultSet resultSet = connection.createStatement().executeQuery(sql)) {
             while (resultSet.next()) {
-                cart.addProduct(loadProduct(resultSet));
+                products.add(loadProduct(resultSet));
             }
         } catch (Exception e) {
             throw new PersistenceException(e);
         }
-        return cart;
+        return new CartData(cart.getId(), products, cart.isHasDelivery());
     }
 
     public static void main(String[] args) throws Exception {
         try (H2Persistence p = new H2Persistence()) {
             Product wwine = new Product("wwine", 100, 25);
-            p.putProduct("wwine", wwine);
-            System.out.println(p.getProduct("wwine"));
+            p.putProduct(wwine.getData());
+            System.out.println(new Product(p.getProduct("wwine")));
             Cart c = new Cart(1);
             c.addDelivery();
             c.addProduct(wwine);
-            p.putCart(1, c);
-            System.out.println(p.getCart(1));
+            p.putCart(c.getData());
+            System.out.println(new Cart(p.getCart(1)));
         }
     }
 

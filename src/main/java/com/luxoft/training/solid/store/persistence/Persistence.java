@@ -1,21 +1,13 @@
 package com.luxoft.training.solid.store.persistence;
 
-import com.luxoft.training.solid.store.Cart;
-import com.luxoft.training.solid.store.Product;
-
 public interface Persistence {
 
-    void putProduct(String name, Product product) throws PersistenceException;
+    void putProduct(ProductData productData) throws PersistenceException;
 
-    Product getProduct(String name) throws PersistenceException;
+    ProductData getProduct(String name) throws PersistenceException;
 
-    void putCart(int cartId, Cart cart) throws PersistenceException;
+    void putCart(CartData cartData) throws PersistenceException;
 
-    Cart getCart(int cartId) throws PersistenceException;
-    
-    class PersistenceException extends RuntimeException {
-        public PersistenceException(Throwable cause) {
-            super(cause);
-        }
-    }
+    CartData getCart(int cartId) throws PersistenceException;
+
 }

@@ -1,12 +1,9 @@
 package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.exception.CartNotFoundException;
+import com.luxoft.training.solid.store.persistence.CartNotFoundException;
 import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
-import com.luxoft.training.solid.store.exception.ProductNotFoundException;
+import com.luxoft.training.solid.store.persistence.ProductNotFoundException;
 import com.luxoft.training.solid.store.persistence.Persistence;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class Store {
 
@@ -24,7 +21,7 @@ public class Store {
 
     public int createNewCart() {
         latestCartId++;
-        persistence.putCart(latestCartId, new Cart(latestCartId));
+        persistence.putCart(new Cart(latestCartId).getData());
         return latestCartId;
     }
 
@@ -39,7 +36,7 @@ public class Store {
     }
 
     private Product takeFromStock(String name, int count) {
-        Product productInStock = findProductInStock(name);
+        Product productInStock = new Product(persistence.getProduct(name));
         removeProductFromStock(productInStock, count);
         return new Product(productInStock.getName(), productInStock.getPrice(), count);
     }
@@ -66,34 +63,22 @@ public class Store {
     }
 
     private Cart getCart(int cartId) {
-        Cart cart = persistence.getCart(cartId);
-        if (cart == null) {
-            throw  new CartNotFoundException(cartId);
-        }
-        return cart;
+        return new Cart(persistence.getCart(cartId));
     }
 
     public void addProductToStock(String name, double price, int count) {
         Product p;
         try {
-            p = findProductInStock(name);
-            p = new Product(name, price, p.getCount() + count);
+            Product oldProduct = new Product(persistence.getProduct(name));
+            p = new Product(name, price, oldProduct.getCount() + count);
         } catch (ProductNotFoundException e) {
             p = new Product(name, price, count);
         }
-        persistence.putProduct(name, p);
-    }
-
-    private Product findProductInStock(String name) {
-        Product productInStock = persistence.getProduct(name);
-        if (productInStock == null) {
-            throw new ProductNotFoundException(name);
-        }
-        return productInStock;
+        persistence.putProduct(p.getData());
     }
 
     public void removeProductFromStock(String name, int countToRemove) {
-        Product p = findProductInStock(name);
+        Product p = new Product(persistence.getProduct(name));
         removeProductFromStock(p, countToRemove);
     }
 
@@ -102,6 +87,6 @@ public class Store {
             throw new NotEnoughInStockException(p, countToRemove);
         }
         p = new Product(p.getName(), p.getPrice(), p.getCount() - countToRemove);
-        persistence.putProduct(p.getName(), p);
+        persistence.putProduct(p.getData());
     }
 }

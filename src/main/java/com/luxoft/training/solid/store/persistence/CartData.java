@@ -1,16 +1,16 @@
-package com.luxoft.training.solid.store;
+package com.luxoft.training.solid.store.persistence;
 
 import java.util.List;
 
 public class CartData {
 
     private int id;
-    private List<Product> products;
+    private List<ProductData> productsData;
     private boolean hasDelivery;
 
-    public CartData(int id, List<Product> products, boolean hasDelivery) {
+    public CartData(int id, List<ProductData> productsData, boolean hasDelivery) {
         this.id = id;
-        this.products = products;
+        this.productsData = productsData;
         this.hasDelivery = hasDelivery;
     }
 
@@ -18,8 +18,8 @@ public class CartData {
         return id;
     }
 
-    public List<Product> getProducts() {
-        return products;
+    public List<ProductData> getProductsData() {
+        return productsData;
     }
 
     public boolean isHasDelivery() {

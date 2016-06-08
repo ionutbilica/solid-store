@@ -1,5 +1,8 @@
 package com.luxoft.training.solid.store;
 
+import com.luxoft.training.solid.store.persistence.CartData;
+import com.luxoft.training.solid.store.persistence.ProductData;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,7 +25,10 @@ public class Cart {
 
     public Cart(CartData cartData) {
         id = cartData.getId();
-        products = new ArrayList<>(cartData.getProducts());
+        products = new ArrayList<>(cartData.getProductsData().size());
+        for (ProductData pd : cartData.getProductsData()) {
+            products.add(new Product(pd));
+        }
         hasDelivery = cartData.isHasDelivery();
     }
 
@@ -58,7 +64,11 @@ public class Cart {
     }
 
     public CartData getData() {
-        return new CartData(id, new ArrayList<>(products), hasDelivery);
+        List<ProductData> productsData = new ArrayList<>(products.size());
+        for (Product p : products) {
+            productsData.add(p.getData());
+        }
+        return new CartData(id, productsData, hasDelivery);
     }
 
     @Override

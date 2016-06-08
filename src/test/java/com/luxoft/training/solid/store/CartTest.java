@@ -1,7 +1,7 @@
 package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.exception.CartNotFoundException;
-import com.luxoft.training.solid.store.exception.ProductNotFoundException;
+import com.luxoft.training.solid.store.persistence.CartNotFoundException;
+import com.luxoft.training.solid.store.persistence.ProductNotFoundException;
 import com.luxoft.training.solid.store.persistence.file.FilePersistence;
 import org.junit.Before;
 import org.junit.Test;

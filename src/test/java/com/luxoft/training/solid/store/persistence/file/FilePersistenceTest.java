@@ -11,16 +11,16 @@ public class FilePersistenceTest {
     public void test() {
         FilePersistence p = new FilePersistence();
         Product product = new Product("wine", 100, 5);
-        p.putProduct("wine", product);
+        p.putProduct(product.getData());
         Cart cart = new Cart(123);
         cart.addProduct(product);
         cart.addDelivery();
-        p.putCart(123, cart);
+        p.putCart(cart.getData());
         
         FilePersistence p2 = new FilePersistence();
-        Product actualWine = p2.getProduct("wine");
+        Product actualWine = new Product(p2.getProduct("wine"));
         Assert.assertEquals("Product not persisted", product, actualWine);
-        Cart actualCart = p2.getCart(123);
+        Cart actualCart = new Cart(p2.getCart(123));
         Assert.assertEquals("Cart not persisted", cart, actualCart);        
     }    
 
