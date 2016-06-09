@@ -1,6 +1,5 @@
 package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.persistence.file.FilePersistence;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -12,7 +11,7 @@ public class ReceiptTest {
 
     @Before
     public void beforeTest() {
-        store = new Store(new FilePersistence());
+        store = new Store(new InMemPersistence());
         cartId = store.createNewCart();
     }
 

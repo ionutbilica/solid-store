@@ -6,7 +6,7 @@ public interface Persistence {
 
     ProductData getProduct(String name) throws PersistenceException;
 
-    void putCart(CartData cartData) throws PersistenceException;
+    void saveCart(CartData cartData) throws PersistenceException;
 
     CartData getCart(int cartId) throws PersistenceException;
 

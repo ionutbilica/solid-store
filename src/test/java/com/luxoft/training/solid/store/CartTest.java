@@ -2,7 +2,6 @@ package com.luxoft.training.solid.store;
 
 import com.luxoft.training.solid.store.persistence.CartNotFoundException;
 import com.luxoft.training.solid.store.persistence.ProductNotFoundException;
-import com.luxoft.training.solid.store.persistence.file.FilePersistence;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,7 +15,7 @@ public class CartTest {
 
     @Before
     public void beforeTest() {
-        store = new Store(new FilePersistence());
+        store = new Store(new InMemPersistence());
         new TestStock().insertIntoStore(store);
         cartId = store.createNewCart();
     }

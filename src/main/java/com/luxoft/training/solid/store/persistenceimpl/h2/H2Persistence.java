@@ -1,4 +1,4 @@
-package com.luxoft.training.solid.store.persistence.h2;
+package com.luxoft.training.solid.store.persistenceimpl.h2;
 
 import com.luxoft.training.solid.store.Cart;
 import com.luxoft.training.solid.store.Product;
@@ -81,7 +81,7 @@ public class H2Persistence implements Persistence, Closeable {
     }
 
     @Override
-    public void putCart(CartData cartData) {
+    public void saveCart(CartData cartData) {
         try {
             getCartWithoutProducts(cartData.getId());
             updateCart(cartData);
@@ -122,7 +122,7 @@ public class H2Persistence implements Persistence, Closeable {
             } else {
                 throw new CartNotFoundException(cartId);
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new PersistenceException(e);
         }
     }
@@ -140,12 +140,13 @@ public class H2Persistence implements Persistence, Closeable {
     public CartData getCart(int cartId) {
         CartData cart = getCartWithoutProducts(cartId);
         List<ProductData> products = new ArrayList<>();
-        String sql = "SELECT * FROM CART_PRODUCT, PRODUCT WHERE cart_id ='" + cartId + "'";
+        String sql = "SELECT * FROM CART_PRODUCT, PRODUCT WHERE cart_id =" + cartId + " AND PRODUCT.name=CART_PRODUCT.product_name";
         try (ResultSet resultSet = connection.createStatement().executeQuery(sql)) {
             while (resultSet.next()) {
+                System.out.println("here");
                 products.add(loadProduct(resultSet));
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new PersistenceException(e);
         }
         return new CartData(cart.getId(), products, cart.isHasDelivery());
@@ -159,7 +160,7 @@ public class H2Persistence implements Persistence, Closeable {
             Cart c = new Cart(1);
             c.addDelivery();
             c.addProduct(wwine);
-            p.putCart(c.getData());
+            p.saveCart(c.getData());
             System.out.println(new Cart(p.getCart(1)));
         }
     }

@@ -1,4 +1,4 @@
-package com.luxoft.training.solid.store.persistence.file;
+package com.luxoft.training.solid.store.persistenceimpl.file;
 
 import com.luxoft.training.solid.store.persistence.*;
 
@@ -41,7 +41,7 @@ public class FilePersistence implements Persistence {
     }
 
     @Override
-    public void putCart(CartData cartData) {
+    public void saveCart(CartData cartData) {
         carts.put(cartData.getId(), new SerializableCart(cartData));
         save();
     }
@@ -70,7 +70,7 @@ public class FilePersistence implements Persistence {
              ObjectInputStream in = new ObjectInputStream(fileIn)) {
             stock = (Map<String, SerializableProduct>) in.readObject();
             carts = (Map<Integer, SerializableCart>) in.readObject();
-        } catch (Exception e) {
+        } catch (IOException|ClassNotFoundException e) {
             throw new PersistenceException(e);
         }
     }

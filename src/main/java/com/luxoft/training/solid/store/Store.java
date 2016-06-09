@@ -1,9 +1,7 @@
 package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.persistence.CartNotFoundException;
-import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
-import com.luxoft.training.solid.store.persistence.ProductNotFoundException;
 import com.luxoft.training.solid.store.persistence.Persistence;
+import com.luxoft.training.solid.store.persistence.ProductNotFoundException;
 
 public class Store {
 
@@ -21,7 +19,7 @@ public class Store {
 
     public int createNewCart() {
         latestCartId++;
-        persistence.putCart(new Cart(latestCartId).getData());
+        persistence.saveCart(new Cart(latestCartId).getData());
         return latestCartId;
     }
 
@@ -33,6 +31,7 @@ public class Store {
         Cart cart = getCart(cartId);
         Product product = takeFromStock(name, count);
         cart.addProduct(product);
+        persistence.saveCart(cart.getData());
     }
 
     private Product takeFromStock(String name, int count) {
@@ -49,6 +48,7 @@ public class Store {
     public void addDeliveryToCart(int cartId) {
         Cart cart = getCart(cartId);
         cart.addDelivery();
+        persistence.saveCart(cart.getData());
     }
 
     public String pay(int cartId) {

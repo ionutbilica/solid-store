@@ -1,4 +1,4 @@
-package com.luxoft.training.solid.store.persistence.file;
+package com.luxoft.training.solid.store.persistenceimpl.file;
 
 import com.luxoft.training.solid.store.Cart;
 import com.luxoft.training.solid.store.Product;
@@ -15,7 +15,7 @@ public class FilePersistenceTest {
         Cart cart = new Cart(123);
         cart.addProduct(product);
         cart.addDelivery();
-        p.putCart(cart.getData());
+        p.saveCart(cart.getData());
         
         FilePersistence p2 = new FilePersistence();
         Product actualWine = new Product(p2.getProduct("wine"));
