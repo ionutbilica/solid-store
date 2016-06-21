@@ -1,10 +1,13 @@
-package com.luxoft.training.solid.store;
+package com.luxoft.training.solid.store.receipt;
 
+import com.luxoft.training.solid.store.Store;
+import com.luxoft.training.solid.store.TestStock;
+import com.luxoft.training.solid.store.receipt.ReceiptFactory;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
-public class ReceiptTest {
+public class TextReceiptTest {
 
     private Store store;
     private int cartId;
@@ -17,7 +20,7 @@ public class ReceiptTest {
 
     @Test
     public void testEmptyCart() {
-        String receipt = store.pay(cartId);
+        String receipt = store.pay(cartId, ReceiptFactory.Format.TEXT.toString());
         receipt = removeUntestableInfo(receipt);
         Assert.assertEquals("Empty receipt not as expected."
                 , "Our StoreReceipt no.: not able to test this.\n" +
@@ -32,7 +35,7 @@ public class ReceiptTest {
         new TestStock().insertIntoStore(store);
         store.addProductToCart(TestStock.BREAD_NAME, cartId);
         store.addProductToCart(TestStock.WINE_NAME, 2, cartId);
-        String receipt = store.pay(cartId);
+        String receipt = store.pay(cartId, ReceiptFactory.Format.TEXT.toString());
         receipt = removeUntestableInfo(receipt);
         Assert.assertEquals("Receipt for two products not as expected."
         , "Our StoreReceipt no.: not able to test this.\n" +
@@ -50,7 +53,7 @@ public class ReceiptTest {
         store.addProductToCart(TestStock.BREAD_NAME, cartId);
         store.addProductToCart(TestStock.WINE_NAME, 2, cartId);
         store.addDeliveryToCart(cartId);
-        String receipt = store.pay(cartId);
+        String receipt = store.pay(cartId, ReceiptFactory.Format.TEXT.toString());
         receipt = removeUntestableInfo(receipt);
         Assert.assertEquals("Receipt for two products not as expected."
                 , "Our StoreReceipt no.: not able to test this.\n" +
