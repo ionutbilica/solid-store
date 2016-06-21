@@ -24,7 +24,10 @@ public class Cart {
     }
 
     public double getTotalPrice() {
-        double productsTotal = products.stream().mapToDouble(Product::getFullPriceForAll).sum();
+        double productsTotal = 0;
+        for (Product p : products) {
+            productsTotal += p.getPriceForAll();
+        }
         double deliveryCost = hasDelivery ? DELIVERY_COST : 0;
         return productsTotal + deliveryCost;
     }
@@ -33,7 +36,7 @@ public class Cart {
         StringBuilder s = new StringBuilder("Our Store");
         s.append("Receipt no.: " + ++receiptNo + "\n");
         for (Product p : products) {
-            s.append(p.getName() + ": " + p.getCount() + " x " + p.getPrice() + " = " + p.getFullPriceForAll() + "\n");
+            s.append(p.getName() + ": " + p.getCount() + " x " + p.getPrice() + " = " + p.getPriceForAll() + "\n");
         }
         if (hasDelivery) {
             s.append("Delivery: " + DELIVERY_COST + "\n");

@@ -18,7 +18,7 @@ public final class Product {
         return price;
     }
 
-    public double getFullPriceForAll() {
+    public double getPriceForAll() {
         return getPrice() * count;
     }
 
