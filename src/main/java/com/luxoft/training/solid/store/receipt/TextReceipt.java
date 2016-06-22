@@ -7,21 +7,7 @@ import java.util.List;
 
 import static com.luxoft.training.solid.store.Cart.DELIVERY_COST;
 
-public class TextReceipt implements Receipt {
-
-    private static int receiptNo;
-
-    private List<TextProductReceiptLine> productLines;
-
-    private double deliveryCost;
-
-    private boolean hasDelivery;
-    private double totalPrice;
-
-    public TextReceipt() {
-        productLines = new ArrayList<>();
-        hasDelivery = false;
-    }
+public class TextReceipt extends AbstractReceipt {
 
     @Override
     public void addProduct(String name, int count, double price, double priceForAll) {
@@ -29,20 +15,10 @@ public class TextReceipt implements Receipt {
     }
 
     @Override
-    public void setTotalPrice(double totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    @Override
-    public void addDelivery(double cost) {
-        hasDelivery = true;
-        deliveryCost = cost;
-    }
-
     public String toString() {
         StringBuilder s = new StringBuilder("Our Store");
         s.append("Receipt no.: " + (++receiptNo) + "\n");
-        for (TextProductReceiptLine p : productLines) {
+        for (ProductReceiptLine p : productLines) {
             s.append(p.toString() + "\n");
         }
         if (hasDelivery) {

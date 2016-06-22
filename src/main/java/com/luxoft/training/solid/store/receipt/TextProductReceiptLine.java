@@ -1,17 +1,9 @@
 package com.luxoft.training.solid.store.receipt;
 
-public class TextProductReceiptLine {
-
-    private final String name;
-    private final int count;
-    private final double price;
-    private final double priceForAll;
+public class TextProductReceiptLine extends ProductReceiptLine {
 
     public TextProductReceiptLine(String name, int count, double price, double priceForAll) {
-        this.name = name;
-        this.count = count;
-        this.price = price;
-        this.priceForAll = priceForAll;
+        super(name, count, price, priceForAll);
     }
 
     @Override
