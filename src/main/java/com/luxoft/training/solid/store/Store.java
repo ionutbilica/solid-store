@@ -3,6 +3,7 @@ package com.luxoft.training.solid.store;
 import com.luxoft.training.solid.store.exception.CartNotFoundException;
 import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
 import com.luxoft.training.solid.store.exception.ProductNotFoundException;
+import com.luxoft.training.solid.store.receipt.Receipt;
 import com.luxoft.training.solid.store.receipt.ReceiptFactory;
 
 import java.util.HashMap;
@@ -60,7 +61,8 @@ public class Store {
         Cart cart = getCart(cartId);
         double moneyFromTheClient = cart.getTotalPrice();
         cash += moneyFromTheClient;
-        return cart.getReceipt(ReceiptFactory.Format.valueOf(formatName));
+        Receipt receipt = receiptFactory.createReceipt(ReceiptFactory.Format.valueOf(formatName));
+        return cart.fillInReceipt(receipt);
     }
 
     public double getCashAmount() {

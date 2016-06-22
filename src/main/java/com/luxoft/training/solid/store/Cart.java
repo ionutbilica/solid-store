@@ -34,8 +34,7 @@ public class Cart {
         return productsTotal + deliveryCost;
     }
 
-    public String getReceipt(ReceiptFactory.Format format) {
-        Receipt receipt = receiptFactory.createReceipt(format);
+    public String fillInReceipt(Receipt receipt) {
         for (Product p : products) {
             receipt.addProduct(p.getName(), p.getCount(), p.getPrice(), p.getPriceForAll());
         }
