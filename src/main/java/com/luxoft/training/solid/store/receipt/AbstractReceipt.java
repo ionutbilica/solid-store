@@ -5,8 +5,6 @@ import java.util.List;
 
 public abstract class AbstractReceipt implements Receipt {
 
-    protected static int receiptNo;
-
     protected List<ProductReceiptLine> productLines;
 
     protected double deliveryCost;

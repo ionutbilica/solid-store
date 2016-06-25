@@ -17,8 +17,8 @@ public class Store {
     private final Map<Integer, Cart> carts;
     private int latestCartId;
 
-    public Store() {
-        this.receiptFactory = new ReceiptFactory();
+    public Store(ReceiptFactory receiptFactory) {
+        this.receiptFactory = receiptFactory;
         this.stock = new HashMap<>();
         cash = 0;
         carts = new HashMap<Integer, Cart>();

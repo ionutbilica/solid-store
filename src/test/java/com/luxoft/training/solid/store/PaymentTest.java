@@ -4,6 +4,8 @@ import com.luxoft.training.solid.store.receipt.ReceiptFactory;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Date;
+
 import static com.luxoft.training.solid.store.TestStock.*;
 import static org.junit.Assert.assertEquals;
 
@@ -14,7 +16,7 @@ public class PaymentTest {
 
     @Before
     public void beforeTest() {
-        store = new Store();
+        store = new Store(new ReceiptFactory(new MockIdGenerator(0), new LocalClock()));
         new TestStock().insertIntoStore(store);
         cartId = store.createNewCart();
     }

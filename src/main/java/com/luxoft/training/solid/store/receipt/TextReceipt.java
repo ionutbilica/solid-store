@@ -7,10 +7,18 @@ import static com.luxoft.training.solid.store.Cart.DELIVERY_COST;
 
 public class TextReceipt extends AbstractReceipt {
 
+    private final int no;
+    private final Date date;
+
+    public TextReceipt(int no, Date date) {
+        this.no = no;
+        this.date = date;
+    }
+
     @Override
     public String toString() {
         StringBuilder s = new StringBuilder("Our Store");
-        s.append("Receipt no.: " + (++receiptNo) + "\n");
+        s.append("Receipt no.: " + no + "\n");
 
         appendProducts(s);
 
@@ -18,7 +26,7 @@ public class TextReceipt extends AbstractReceipt {
             s.append("Delivery: " + DELIVERY_COST + "\n");
         }
         s.append("Total: " + totalPrice + "\n");
-        s.append("Date: " + new SimpleDateFormat("dd-M-yyyy hh:mm:ss").format(new Date()) + "\n");
+        s.append("Date: " + new SimpleDateFormat("dd-M-yyyy hh:mm:ss").format(date) + "\n");
         return s.toString();
     }
 
