@@ -1,6 +1,6 @@
 package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
+import com.luxoft.training.solid.store.receipt.Receipt;
 
 public final class Product {
 
@@ -37,5 +37,9 @@ public final class Product {
                 ", price=" + price +
                 ", count=" + count +
                 '}';
+    }
+
+    public void fillInReceipt(Receipt receipt) {
+        receipt.addProduct(name, count, price, getPriceForAll());
     }
 }

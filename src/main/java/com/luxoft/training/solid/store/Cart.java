@@ -36,7 +36,7 @@ public class Cart {
 
     public String fillInReceipt(Receipt receipt) {
         for (Product p : products) {
-            receipt.addProduct(p.getName(), p.getCount(), p.getPrice(), p.getPriceForAll());
+            p.fillInReceipt(receipt);
         }
         if (hasDelivery) {
             receipt.addDelivery(DELIVERY_COST);

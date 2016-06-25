@@ -25,9 +25,27 @@ public abstract class AbstractReceipt implements Receipt {
     }
 
     @Override
+    public void addProduct(String name, int count, double price, double priceForAll) {
+        productLines.add(new ProductReceiptLine(name, count, price, priceForAll));
+    }
+
+    @Override
     public void addDelivery(double cost) {
         hasDelivery = true;
         deliveryCost = cost;
     }
 
+    public static class ProductReceiptLine {
+        protected final String name;
+        protected final int count;
+        protected final double price;
+        protected final double priceForAll;
+
+        public ProductReceiptLine(String name, int count, double price, double priceForAll) {
+            this.name = name;
+            this.count = count;
+            this.price = price;
+            this.priceForAll = priceForAll;
+        }
+    }
 }
