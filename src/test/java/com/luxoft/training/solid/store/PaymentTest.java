@@ -16,8 +16,7 @@ public class PaymentTest {
 
     @Before
     public void beforeTest() {
-        store = new Store(new ReceiptFactory(new MockIdGenerator(0), new LocalClock()));
-        new TestStock().insertIntoStore(store);
+        store = new Store(new TestStock(), new ReceiptFactory(new MockIdGenerator(0), new LocalClock()));
         cartId = store.createNewCart();
     }
 

@@ -1,10 +1,7 @@
 package com.luxoft.training.solid.store.receipt;
 
-import com.luxoft.training.solid.store.MockClock;
-import com.luxoft.training.solid.store.MockIdGenerator;
-import com.luxoft.training.solid.store.Store;
-import com.luxoft.training.solid.store.TestStock;
-import com.luxoft.training.solid.store.receipt.ReceiptFactory;
+import com.luxoft.training.solid.store.*;
+import com.luxoft.training.solid.store.provisioning.ProductsRepo;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,8 +12,9 @@ import java.util.Date;
 
 public class TextReceiptTest {
 
-    private Store store;
+    private Sales sales;
     private int cartId;
+    private Stock stock;
 
     @Before
     public void beforeTest() throws ParseException {
@@ -24,14 +22,15 @@ public class TextReceiptTest {
         MockClock mockClock = new MockClock(fixedDate);
         MockIdGenerator receiptNoGenerator = new MockIdGenerator(33);
         ReceiptFactory receiptFactory = new ReceiptFactory(receiptNoGenerator, mockClock);
-        store = new Store(receiptFactory);
+        stock = new ProductsRepo();
+        sales = new Store(new TestStock(), receiptFactory);
 
-        cartId = store.createNewCart();
+        cartId = sales.createNewCart();
     }
 
     @Test
     public void testEmptyCart() {
-        String receipt = store.pay(cartId, ReceiptFactory.Format.TEXT.toString());
+        String receipt = sales.pay(cartId, ReceiptFactory.Format.TEXT.toString());
         Assert.assertEquals("Empty receipt not as expected."
                 , "Our StoreReceipt no.: 33\n" +
                 "Total: 0.0\n" +
@@ -41,10 +40,9 @@ public class TextReceiptTest {
 
     @Test
     public void testTwoProducts() {
-        new TestStock().insertIntoStore(store);
-        store.addProductToCart(TestStock.BREAD_NAME, cartId);
-        store.addProductToCart(TestStock.WINE_NAME, 2, cartId);
-        String receipt = store.pay(cartId, ReceiptFactory.Format.TEXT.toString());
+        sales.addProductToCart(TestStock.BREAD_NAME, cartId);
+        sales.addProductToCart(TestStock.WINE_NAME, 2, cartId);
+        String receipt = sales.pay(cartId, ReceiptFactory.Format.TEXT.toString());
         Assert.assertEquals("Receipt for two products not as expected."
         , "Our StoreReceipt no.: 33\n" +
                         "Bread: 1 x 5.0 = 5.0\n" +
@@ -57,11 +55,10 @@ public class TextReceiptTest {
 
     @Test
     public void testWithDelivery() {
-        new TestStock().insertIntoStore(store);
-        store.addProductToCart(TestStock.BREAD_NAME, cartId);
-        store.addProductToCart(TestStock.WINE_NAME, 2, cartId);
-        store.addDeliveryToCart(cartId);
-        String receipt = store.pay(cartId, ReceiptFactory.Format.TEXT.toString());
+        sales.addProductToCart(TestStock.BREAD_NAME, cartId);
+        sales.addProductToCart(TestStock.WINE_NAME, 2, cartId);
+        sales.addDeliveryToCart(cartId);
+        String receipt = sales.pay(cartId, ReceiptFactory.Format.TEXT.toString());
         Assert.assertEquals("Receipt for two products not as expected."
                 , "Our StoreReceipt no.: 33\n" +
                         "Bread: 1 x 5.0 = 5.0\n" +
