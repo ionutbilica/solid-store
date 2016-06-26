@@ -1,6 +1,6 @@
-package com.luxoft.training.solid.store.receipt;
+package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.receipt.IdGenerator;
+import com.luxoft.training.solid.store.IdGenerator;
 
 public class MockIdGenerator implements IdGenerator {
 

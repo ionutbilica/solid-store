@@ -10,7 +10,7 @@ public class Cart {
     private List<Product> products;
     private boolean hasDelivery;
 
-    public Cart(int id, ReceiptFactory receiptFactory) {
+    public Cart(int id) {
         this.id = id;
         hasDelivery = false;
         products = new ArrayList<>();
