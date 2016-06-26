@@ -1,10 +1,6 @@
 package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
-import com.luxoft.training.solid.store.exception.ProductNotFoundException;
-import com.luxoft.training.solid.store.provisioning.ProductsRepo;
-
-public class TestStock extends ProductsRepo {
+public class TestStock extends MemStock {
 
     public static final double BREAD_PRICE = 5;
     public static final double WINE_PRICE = 10;

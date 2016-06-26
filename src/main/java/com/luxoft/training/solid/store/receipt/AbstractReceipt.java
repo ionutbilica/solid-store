@@ -1,5 +1,7 @@
 package com.luxoft.training.solid.store.receipt;
 
+import com.luxoft.training.solid.store.Receipt;
+
 import java.util.ArrayList;
 import java.util.List;
 

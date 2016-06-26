@@ -1,7 +1,6 @@
 package com.luxoft.training.solid.store;
 
 import com.luxoft.training.solid.store.exception.CartNotFoundException;
-import com.luxoft.training.solid.store.exception.NotEnoughInStockException;
 import com.luxoft.training.solid.store.exception.ProductNotFoundException;
 
 public interface Sales {

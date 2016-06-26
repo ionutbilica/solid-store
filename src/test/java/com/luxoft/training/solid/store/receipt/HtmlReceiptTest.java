@@ -1,9 +1,6 @@
 package com.luxoft.training.solid.store.receipt;
 
-import com.luxoft.training.solid.store.MockClock;
-import com.luxoft.training.solid.store.MockIdGenerator;
-import com.luxoft.training.solid.store.Store;
-import com.luxoft.training.solid.store.TestStock;
+import com.luxoft.training.solid.store.*;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +19,7 @@ public class HtmlReceiptTest {
         Date fixedDate = new SimpleDateFormat("dd-M-yyyy hh:mm:ss").parse("10-12-2015 12:33:44");
         MockClock mockClock = new MockClock(fixedDate);
         MockIdGenerator receiptNoGenerator = new MockIdGenerator(33);
-        ReceiptFactory receiptFactory = new ReceiptFactory(receiptNoGenerator, mockClock);
+        ReceiptFactory receiptFactory = new ConcreteReceiptFactory(receiptNoGenerator, mockClock);
         store = new Store(new TestStock(), receiptFactory);
 
         cartId = store.createNewCart();

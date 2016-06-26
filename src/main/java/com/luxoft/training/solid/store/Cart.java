@@ -1,8 +1,5 @@
 package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.receipt.Receipt;
-import com.luxoft.training.solid.store.receipt.ReceiptFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,13 +7,11 @@ public class Cart {
 
     public static final double DELIVERY_COST = 12;
     private final int id;
-    private final ReceiptFactory receiptFactory;
     private List<Product> products;
     private boolean hasDelivery;
 
     public Cart(int id, ReceiptFactory receiptFactory) {
         this.id = id;
-        this.receiptFactory = receiptFactory;
         hasDelivery = false;
         products = new ArrayList<>();
     }

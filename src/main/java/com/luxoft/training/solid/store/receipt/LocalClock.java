@@ -1,4 +1,6 @@
-package com.luxoft.training.solid.store;
+package com.luxoft.training.solid.store.receipt;
+
+import com.luxoft.training.solid.store.receipt.Clock;
 
 import java.util.Date;
 

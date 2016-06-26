@@ -1,7 +1,5 @@
 package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.receipt.Receipt;
-
 public final class Product {
 
     private final String name;
@@ -12,6 +10,10 @@ public final class Product {
         this.name = name;
         this.price = price;
         this.count = count;
+    }
+
+    public Product(ProductData productData) {
+        this(productData.getName(), productData.getPrice(), productData.getCount());
     }
 
     public double getPrice() {

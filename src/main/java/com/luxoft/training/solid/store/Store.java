@@ -1,8 +1,6 @@
 package com.luxoft.training.solid.store;
 
 import com.luxoft.training.solid.store.exception.CartNotFoundException;
-import com.luxoft.training.solid.store.receipt.Receipt;
-import com.luxoft.training.solid.store.receipt.ReceiptFactory;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,7 +34,7 @@ public class Store implements Sales {
 
     public void addProductToCart(String name, int count, int cartId) {
         Cart cart = getCart(cartId);
-        Product product = stock.takeProduct(name, count);
+        Product product = new Product(stock.takeProduct(name, count));
         cart.addProduct(product);
     }
 
