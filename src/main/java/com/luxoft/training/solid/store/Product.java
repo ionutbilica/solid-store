@@ -44,4 +44,8 @@ public final class Product {
     public void fillInReceipt(Receipt receipt) {
         receipt.addProduct(name, count, price, getPriceForAll());
     }
+
+    public ProductData getData() {
+        return new ProductData(name, price, count);
+    }
 }

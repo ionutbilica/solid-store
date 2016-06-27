@@ -43,4 +43,13 @@ public class Cart {
     public void addDelivery() {
         this.hasDelivery = true;
     }
+    
+    public CartData getData() {
+        List<ProductData> productsData = new ArrayList<>(products.size());
+        for (Product p : products) {
+            productsData.add(p.getData());
+        }
+        return new CartData(id, productsData, hasDelivery);
+    }
+    
 }

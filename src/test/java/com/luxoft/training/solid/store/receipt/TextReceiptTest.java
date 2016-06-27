@@ -23,7 +23,7 @@ public class TextReceiptTest {
         MockIdGenerator receiptNoGenerator = new MockIdGenerator(33);
         ReceiptFactory receiptFactory = new ConcreteReceiptFactory(receiptNoGenerator, mockClock);
         stock = new MemStock();
-        sales = new Store(new TestStock(), new CartsRepo(new MockIdGenerator(1)), receiptFactory);
+        sales = new Store(new TestStock(), new MemCartsRepo(new MockIdGenerator(1)), receiptFactory);
 
         cartId = sales.createNewCart();
     }

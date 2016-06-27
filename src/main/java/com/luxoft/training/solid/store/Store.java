@@ -1,10 +1,5 @@
 package com.luxoft.training.solid.store;
 
-import com.luxoft.training.solid.store.exception.CartNotFoundException;
-
-import java.util.HashMap;
-import java.util.Map;
-
 public class Store implements Sales {
 
     private final Stock stock;
@@ -29,23 +24,35 @@ public class Store implements Sales {
     }
 
     public void addProductToCart(String name, int count, int cartId) {
-        Cart cart = cartsRepo.getCart(cartId);
+        Cart cart = getCart(cartId);
         Product product = new Product(stock.takeProduct(name, count));
         cart.addProduct(product);
+        cartsRepo.saveCart(cart.getData());
+    }
+
+    private Cart getCart(int cartId) {
+        CartData cartData = cartsRepo.getCart(cartId);
+        Cart cart = new Cart(cartData.getId());
+        if (cartData.isHasDelivery()) cart.addDelivery();
+        for (ProductData pd : cartData.getProducts()) {
+            cart.addProduct(new Product(pd));
+        }
+        return cart;
     }
 
     public double getCartTotal(int cartId) {
-        Cart cart = cartsRepo.getCart(cartId);
+        Cart cart = getCart(cartId);
         return cart.getTotalPrice();
     }
 
     public void addDeliveryToCart(int cartId) {
-        Cart cart = cartsRepo.getCart(cartId);
+        Cart cart = getCart(cartId);
         cart.addDelivery();
+        cartsRepo.saveCart(cart.getData());
     }
 
     public String pay(int cartId, String formatName) {
-        Cart cart = cartsRepo.getCart(cartId);
+        Cart cart = getCart(cartId);
         double moneyFromTheClient = cart.getTotalPrice();
         cash += moneyFromTheClient;
         Receipt receipt = receiptFactory.createReceipt(ReceiptFactory.Format.valueOf(formatName));

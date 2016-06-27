@@ -20,7 +20,7 @@ public class HtmlReceiptTest {
         MockClock mockClock = new MockClock(fixedDate);
         MockIdGenerator receiptNoGenerator = new MockIdGenerator(33);
         ReceiptFactory receiptFactory = new ConcreteReceiptFactory(receiptNoGenerator, mockClock);
-        store = new Store(new TestStock(), new CartsRepo(new MockIdGenerator(1)), receiptFactory);
+        store = new Store(new TestStock(), new MemCartsRepo(new MockIdGenerator(1)), receiptFactory);
 
         cartId = store.createNewCart();
     }
